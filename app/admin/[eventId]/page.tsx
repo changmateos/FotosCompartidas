@@ -9,8 +9,8 @@ import { getEventForAdmin } from "@/lib/events";
 import { ConfigForm } from "./config-form";
 import { QRCard } from "@/components/qr/QRCard";
 import { DrivePanel } from "./DrivePanel";
-import { ModerationPanel, type AdminPhoto, type AdminComment } from "./ModerationPanel";
-import { ReviewSwiper } from "./ReviewSwiper";
+import { ModerationPanel } from "./ModerationPanel";
+import { ReviewSwiper, type ReviewPhoto } from "./ReviewSwiper";
 import { MembersPanel, type MemberRow } from "./MembersPanel";
 import "../admin.css";
 
@@ -35,21 +35,13 @@ export default async function EventAdminPage({
   // Moderacion (repair F1): fotos y comentarios del evento. RLS publica
   // (photos/comments select) permite leerlas con la sesion del miembro.
   const supabase = await createClient();
-  const [{ data: photosData }, { data: commentsData }] = await Promise.all([
-    supabase
-      .from("photos")
-      .select("id, thumb_url, caption, created_at, like_count, comment_count")
-      .eq("event_id", event.id)
-      .order("created_at", { ascending: false })
-      .limit(300),
-    supabase
-      .from("comments")
-      .select("id, photo_id, guest_id, text, created_at")
-      .eq("event_id", event.id)
-      .order("created_at", { ascending: true }),
-  ]);
-  const photos = (photosData ?? []) as unknown as AdminPhoto[];
-  const comments = (commentsData ?? []) as unknown as AdminComment[];
+  const { data: photosData } = await supabase
+    .from("photos")
+    .select("id, thumb_url, caption, created_at, like_count, comment_count")
+    .eq("event_id", event.id)
+    .order("created_at", { ascending: false })
+    .limit(300);
+  const photos = (photosData ?? []) as unknown as ReviewPhoto[];
 
   // Multi-organizador (repair #2): lista de miembros con email/display.
   // event_members via RLS; el detalle de organizers se lee con el
@@ -125,8 +117,6 @@ export default async function EventAdminPage({
             eventId={event.id}
             slug={event.slug}
             initialStatus={event.status}
-            initialPhotos={photos}
-            initialComments={comments}
           />
         </>
       )}
