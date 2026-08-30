@@ -489,14 +489,19 @@
   gap: 0.5rem;
   border-bottom: 1px solid var(--border);
   margin-bottom: 1.25rem;
-  flex-wrap: wrap;
   padding: 0.5rem 0;
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  /* Fondo solido (compatible con todos los navegadores): el sticky
+     queda claramente visible sobre el contenido al hacer scroll.
+     Las pestanas ocupan el 100% del ancho disponible. */
+  background: var(--bg);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .adm-tab {
+  flex: 1 1 0;
+  text-align: center;
   padding: 0.6rem 1.1rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -504,6 +509,7 @@
   text-decoration: none;
   border-bottom: 2px solid transparent;
   transition: color 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
 }
 .adm-tab:hover {
   color: var(--text);

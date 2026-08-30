@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* Reset global: evitar scroll horizontal y asegurar box-sizing. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  max-width: 100%;
+}
+
 /* ============================================================
    Temas PicMyEvent (decision 6 del handshake) - F8
    Se aplican via CSS variables sobre el elemento con [data-theme].
