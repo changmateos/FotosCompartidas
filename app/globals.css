@@ -26,6 +26,14 @@ html {
   overflow-x: hidden;
 }
 
+/* En paginas /admin, el <body> bloquea el scroll (lo hace .adm-main,
+   que es su scroll container). Esto elimina el doble scroll y permite
+   el sticky. Se activa via AdminBodyClass (componente cliente). */
+body.body-admin {
+  height: 100dvh;
+  overflow: hidden;
+}
+
 /* ============================================================
    Temas PicMyEvent (decision 6 del handshake) - F8
    Se aplican via CSS variables sobre el elemento con [data-theme].

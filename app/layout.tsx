@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { AdminBodyClass } from "@/components/admin-body-class";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -14,7 +15,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <AdminBodyClass />
+        {children}
+      </body>
     </html>
   );
 }
