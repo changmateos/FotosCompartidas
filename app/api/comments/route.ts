@@ -3,6 +3,7 @@
 // foto existente, evento activo y texto 1-500; mantiene
 // photos.comment_count). El texto se renderiza como texto plano en
 // el cliente (React escapa HTML). Rate limit por IP (fail-open).
+import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
 import { checkRateLimit } from "@/lib/ratelimit";
@@ -53,12 +54,12 @@ export async function POST(request: Request) {
   }
 
   const photoId = typeof body.photoId === "string" ? body.photoId : "";
-  // Cookie guest_id autoritativa (la setea /api/upload); el body solo
-  // para el primer contacto, persistiendose como cookie.
+  // La cookie guest_id (httpOnly) es la UNICA fuente autoritativa de
+  // identidad. Se IGNORA el guestId del body (evita suplantar otro
+  // guest_id). Si no hay cookie, se crea aqui (igual que /api/guest).
   const cookieGuest = readCookie(request.headers.get("cookie"), GUEST_COOKIE);
-  const bodyGuest = typeof body.guestId === "string" ? body.guestId : "";
-  const guestId = isValidGuestId(cookieGuest ?? "") ? (cookieGuest as string) : bodyGuest;
   const isNewGuest = !isValidGuestId(cookieGuest ?? "");
+  const guestId = isNewGuest ? crypto.randomUUID() : (cookieGuest as string);
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(photoId)) {
     return NextResponse.json({ error: "photoId invalido." }, { status: 400 });
   }

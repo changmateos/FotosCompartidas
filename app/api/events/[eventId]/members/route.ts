@@ -54,8 +54,9 @@ export async function POST(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Error interno." }, { status: 500 });
   }
   if (!organizer) {
+    // Error generico: no revelar si el email esta registrado (anti-enumeracion).
     return NextResponse.json(
-      { error: "No existe ningun organizador con ese email (debe haber entrado una vez con su cuenta de Google)." },
+      { error: "No se pudo anadir al organizador." },
       { status: 404 }
     );
   }

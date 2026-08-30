@@ -2,6 +2,7 @@
 // anonimo (guest_id de cookie) via RPC toggle_like (SECURITY DEFINER,
 // mantiene photos.like_count). Rate limit ligero por IP (tabla
 // rate_limits, fail-open).
+import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
 import { checkRateLimit } from "@/lib/ratelimit";
@@ -41,18 +42,14 @@ export async function POST(request: Request) {
   }
 
   const photoId = typeof body.photoId === "string" ? body.photoId : "";
-  // La cookie guest_id (httpOnly, la setea /api/upload) es la fuente
-  // autoritativa; el body solo se usa para el primer contacto y se
-  // persiste como cookie para mantener UNA identidad por navegador.
+  // La cookie guest_id (httpOnly) es la UNICA fuente autoritativa de
+  // identidad. Se IGNORA el guestId del body (un atacante podria suplantar
+  // otro guest_id). Si no hay cookie, se crea aqui (igual que /api/guest).
   const cookieGuest = readCookie(request.headers.get("cookie"), GUEST_COOKIE);
-  const bodyGuest = typeof body.guestId === "string" ? body.guestId : "";
-  const guestId = isValidGuestId(cookieGuest ?? "") ? (cookieGuest as string) : bodyGuest;
   const isNewGuest = !isValidGuestId(cookieGuest ?? "");
+  const guestId = isNewGuest ? crypto.randomUUID() : (cookieGuest as string);
   if (!UUID_PHOTO_RE.test(photoId)) {
     return NextResponse.json({ error: "photoId invalido." }, { status: 400 });
-  }
-  if (!isValidGuestId(guestId)) {
-    return NextResponse.json({ error: "guestId invalido." }, { status: 400 });
   }
 
   // Rate limit ligero: max 30 toggles/min por IP (fail-open)

@@ -67,6 +67,16 @@ function isFileLike(v: FormDataEntryValue | null): v is File {
   );
 }
 
+/** Limpia el pie de foto: quita HTML y caracteres de control (anti-XSS). */
+function sanitizeCaption(raw: unknown): string {
+  if (typeof raw !== "string") return "";
+  return raw
+    .replace(/<[^>]*>/g, "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
+    .trim()
+    .slice(0, 500);
+}
+
 function parseCookies(header: string | null): Record<string, string> {
   const out: Record<string, string> = {};
   if (!header) return out;
@@ -92,7 +102,7 @@ export async function POST(request: Request) {
   const file = form.get("file");
   const thumb = form.get("thumb");
   const slug = (form.get("slug") as string | null)?.trim() ?? "";
-  const caption = (form.get("caption") as string | null)?.trim() ?? "";
+  const caption = sanitizeCaption(form.get("caption"));
   const rawWidth = form.get("width");
   const rawHeight = form.get("height");
   const rawSize = form.get("sizeBytes");

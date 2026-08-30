@@ -52,7 +52,9 @@ export async function POST(request: Request, { params }: Params) {
   }
 
   try {
-    const url = await uploadWelcomePhoto(eventId, file, file.type || "image/jpeg");
+    // El cliente ya comprime a JPEG (prepareUploadImage). Se fuerza image/jpeg
+    // para no servir un SVG u otro content-type controlado por el cliente (MED-3).
+    const url = await uploadWelcomePhoto(eventId, file, "image/jpeg");
     return NextResponse.json({ url });
   } catch (err) {
     const message = err instanceof Error ? err.message : "No se pudo subir la foto de bienvenida.";
