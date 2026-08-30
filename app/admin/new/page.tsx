@@ -7,6 +7,9 @@ import "../admin.css";
 
 export const metadata = { title: "Crear evento · PicMyEvent" };
 
+// Depende de sesion (cookies): nunca prerenderizar en build time.
+export const dynamic = "force-dynamic";
+
 export default async function NewEventPage() {
   const supabase = await createClient();
   const {
