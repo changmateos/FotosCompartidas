@@ -151,7 +151,15 @@
 }
 .adm-chip-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.adm-chip-row .adm-input {
+  flex: 1 1 14rem;
+  min-width: 0;
 }
 
 .adm-event-list {
@@ -237,6 +245,14 @@
   flex-direction: column;
   gap: 0.7rem;
   align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.adm-drive-connect .adm-input {
+  width: 100%;
+  max-width: 100%;
+  flex: 1 1 auto;
 }
 .adm-quota {
   width: 100%;

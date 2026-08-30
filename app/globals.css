@@ -20,8 +20,11 @@ body {
 
 /* Evita el scroll horizontal SIN romper position:sticky.
    "clip" (a diferencia de "hidden") NO crea un scroll container,
-   por lo que el sticky sigue funcionando. Soportado en Chrome/Android,
-   Edge y Safari >= 16. NO se aplica a html (romperia el sticky). */
+   por lo que el sticky sigue funcionando en el elemento hijo.
+   Se aplica a html (el scroll container real en Chrome Android)
+   y a body como respaldo. Soportado en Chrome/Android, Edge y
+   Safari >= 16. */
+html,
 body {
   overflow-x: clip;
 }
