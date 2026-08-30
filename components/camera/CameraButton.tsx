@@ -183,15 +183,22 @@ export function CameraButton({ eventSlug, disabled = false, upload }: CameraButt
       )}
 
       {phase === "success" && (
-        <div className="cam-status cam-success" role="status">
-          <p className="cam-success-icon" aria-hidden="true">
-            {"\u{1F389}"}
+        <div className="cam-idle">
+          <p className="cam-hint cam-success" role="status">
+            ¡Foto subida! Ya esta en el feed y en el Drive del organizador.
           </p>
-          <p>¡Foto subida!</p>
-          <p className="cam-status-sub">Tu foto ya esta en el feed y en el Drive del organizador.</p>
-          <button type="button" className="cam-btn cam-btn-primary" onClick={openPicker}>
-            Tomar otra foto
+          <button
+            type="button"
+            className="cam-shutter"
+            onClick={openPicker}
+            disabled={disabled}
+            aria-label="Tomar otra foto"
+          >
+            <span className="cam-shutter-icon" aria-hidden="true">
+              {"\u{1F4F7}"}
+            </span>
           </button>
+          <p className="cam-hint">Toca el boton para tomar otra foto.</p>
         </div>
       )}
 
