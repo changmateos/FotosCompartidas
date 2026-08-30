@@ -1,0 +1,60 @@
+/* Tarjeta QR (F2, T2.4) */
+
+.qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface);
+  text-align: center;
+}
+.qr-card h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.qr-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  max-width: 30rem;
+  line-height: 1.45;
+}
+.qr-figure {
+  background: #ffffff;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+.qr-svg {
+  display: block;
+}
+.qr-canvas-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.qr-url {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  word-break: break-all;
+  max-width: 100%;
+}
+.qr-warning {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b8860b;
+}
+.qr-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}

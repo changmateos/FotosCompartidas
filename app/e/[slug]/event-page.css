@@ -1,0 +1,132 @@
+/* Pagina publica del evento /e/[slug] (F4). Tema aplicado via [data-theme]. */
+
+.ep-root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.ep-header {
+  padding: 2.5rem 1.25rem 1.5rem;
+  text-align: center;
+}
+
+.ep-welcome-img {
+  display: block;
+  width: min(100%, 34rem);
+  max-height: 16rem;
+  object-fit: cover;
+  border-radius: 1rem;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+.ep-title {
+  font-size: clamp(1.6rem, 6vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 0.35rem;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.ep-owners {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+}
+
+.ep-message {
+  font-style: italic;
+  color: var(--muted);
+  max-width: 36rem;
+  margin: 0 auto;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.ep-body {
+  flex: 1;
+  padding: 0 1.25rem 2rem;
+  max-width: 46rem;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.ep-closed-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  margin: 0 0 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ep-section {
+  margin-top: 2.25rem;
+}
+
+.ep-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.9rem;
+}
+
+.ep-empty {
+  border: 2px dashed var(--border);
+  border-radius: 1rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+.ep-empty-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+.ep-empty-title {
+  margin: 0.3rem 0 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.ep-empty-text {
+  margin: 0;
+  font-size: 0.9rem;
+  max-width: 24rem;
+  line-height: 1.45;
+}
+
+.ep-footer {
+  text-align: center;
+  padding: 1.5rem 1rem 2rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Responsive (F8): la pagina es movil primero; ajustes finos para
+   pantallas muy chicas (>= 320 px) y mas aire en desktop. */
+@media (min-width: 640px) {
+  .ep-header {
+    padding: 3.5rem 2rem 2rem;
+  }
+  .ep-body {
+    padding: 0 2rem 2.5rem;
+  }
+  .cam-shutter {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+}

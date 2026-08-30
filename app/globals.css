@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Temas PicMyEvent (decision 6 del handshake) - F8
+   Se aplican via CSS variables sobre el elemento con [data-theme].
+   Paletas ajustadas para contraste AA (WCAG 2.1): texto y muted
+   >= 4.5:1 contra --bg y --surface; --primary >= 4.5:1; --accent
+   >= 3:1 (uso decorativo/UI no textual). color-scheme por tema
+   para que los controles nativos sigan el modo claro/oscuro.
+   Tema por defecto: CLASICO / blanco y negro.
+   ============================================================ */
+
+:root {
+  /* CLASICO · Blanco y negro (por defecto) */
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #f5f5f5;
+  --text: #111111;
+  --muted: #666666;
+  --primary: #111111;
+  --accent: #555555;
+  --border: #dddddd;
+}
+
+[data-theme="clasico-beige"] {
+  color-scheme: light;
+  --bg: #f7f3ea;
+  --surface: #efe8d8;
+  --text: #3b2f1e;
+  --muted: #756751;
+  --primary: #6b4f2a;
+  --accent: #a08050;
+  --border: #d9cdb4;
+}
+
+[data-theme="elegante-marfil"] {
+  color-scheme: light;
+  --bg: #fdfaf3;
+  --surface: #f6efe0;
+  --text: #4a3b28;
+  --muted: #7a6b55;
+  --primary: #8a7123;
+  --accent: #ad8e2d;
+  --border: #e6dcc3;
+}
+
+[data-theme="elegante-negro"] {
+  color-scheme: dark;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --text: #f5f5f5;
+  --muted: #999999;
+  --primary: #d4af37;
+  --accent: #f0c94e;
+  --border: #333333;
+}
+
+[data-theme="fiesta-fucsia"] {
+  color-scheme: light;
+  --bg: #fff0f5;
+  --surface: #ffe0ec;
+  --text: #4a1029;
+  --muted: #9c5070;
+  --primary: #ca307c;
+  --accent: #7b2d8b;
+  --border: #f2c3d6;
+}
+
+[data-theme="fiesta-neon"] {
+  color-scheme: dark;
+  --bg: #0f1114;
+  --surface: #1a1d22;
+  --text: #eaffea;
+  --muted: #7fae7f;
+  --primary: #c6ff00;
+  --accent: #ff2ea6;
+  --border: #2a2f36;
+}
+
+[data-theme="naturaleza-bosque"] {
+  color-scheme: light;
+  --bg: #f4f7f2;
+  --surface: #e6eee2;
+  --text: #22301f;
+  --muted: #606f5c;
+  --primary: #2f6b3a;
+  --accent: #8b5a2b;
+  --border: #cfdcc9;
+}
+
+[data-theme="naturaleza-arena"] {
+  color-scheme: light;
+  --bg: #faf6ef;
+  --surface: #f1e9da;
+  --text: #46352a;
+  --muted: #756758;
+  --primary: #ac5c27;
+  --accent: #c38043;
+  --border: #e2d5c0;
+}
+
+[data-theme="institucional-azul"] {
+  color-scheme: light;
+  --bg: #f2f5f8;
+  --surface: #e3e9ef;
+  --text: #101820;
+  --muted: #5d6a77;
+  --primary: #1a3a5c;
+  --accent: #2f6ea8;
+  --border: #c9d4de;
+}
+
+[data-theme="institucional-rojo"] {
+  color-scheme: light;
+  --bg: #f8f2f2;
+  --surface: #efe2e2;
+  --text: #2b1212;
+  --muted: #835d5d;
+  --primary: #a83232;
+  --accent: #d45a5a;
+  --border: #e0c9c9;
+}
+
+[data-theme="tropical-turquesa"] {
+  color-scheme: light;
+  --bg: #f0fbfb;
+  --surface: #dff4f4;
+  --text: #0e3a3a;
+  --muted: #447575;
+  --primary: #127f7f;
+  --accent: #af8c38;
+  --border: #bfe3e3;
+}
+
+[data-theme="tropical-coral"] {
+  color-scheme: light;
+  --bg: #fff6f2;
+  --surface: #ffe9e0;
+  --text: #4a1e12;
+  --muted: #945e4b;
+  --primary: #bb523a;
+  --accent: #b08b29;
+  --border: #f4cdbf;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accesibilidad: foco visible consistente en todos los temas */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+/* ============================================================
+   Estados compartidos (F8): skeleton de carga
+   ============================================================ */
+
+.sk-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: 0.6rem;
+}
+.sk-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--bg) 55%, transparent),
+    transparent
+  );
+  animation: sk-shimmer 1.4s infinite;
+}
+@keyframes sk-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
