@@ -12,7 +12,7 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { getEventPublic, resolveDataTheme } from "@/lib/feed";
 import { THEME_BG } from "@/lib/themes";
-import { CameraButton } from "@/components/camera/CameraButton";
+import { StickyCameraBar } from "@/components/camera/StickyCameraBar";
 import { ThemePreview } from "@/components/theme/ThemePreview";
 import { FeedSection } from "@/components/feed/FeedSection";
 import "./event-page.css";
@@ -115,10 +115,7 @@ export default async function EventPage({ params, searchParams }: Props) {
                 Este evento esta cerrado: ya no se aceptan fotos, pero el feed queda como recuerdo.
               </div>
             ) : (
-              <section className="ep-section" aria-label="Subir una foto">
-                <h2 className="ep-section-title">Comparte tu foto</h2>
-                <CameraButton eventSlug={slug} />
-              </section>
+              <StickyCameraBar eventSlug={slug} />
             )}
 
             <section className="ep-section" aria-label="Fotos del evento">

@@ -1,0 +1,83 @@
+/* Obturador sticky en el top del feed (peticion UX). */
+
+.sc-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+
+.sc-shutter {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--text);
+  color: var(--bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 0.3rem var(--surface), 0 0 0 0.38rem var(--primary);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.sc-shutter:hover {
+  transform: scale(1.06);
+}
+.sc-shutter:active {
+  transform: scale(0.95);
+}
+.sc-shutter:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.sc-shutter-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.sc-bar-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Overlay a pantalla completa para el flujo de captura. */
+.sc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.sc-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.sc-preview-img {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}

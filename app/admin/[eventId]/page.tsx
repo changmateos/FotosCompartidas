@@ -10,13 +10,22 @@ import { ConfigForm } from "./config-form";
 import { QRCard } from "@/components/qr/QRCard";
 import { DrivePanel } from "./DrivePanel";
 import { ModerationPanel, type AdminPhoto, type AdminComment } from "./ModerationPanel";
+import { ReviewSwiper } from "./ReviewSwiper";
 import { MembersPanel, type MemberRow } from "./MembersPanel";
 import "../admin.css";
 
 export const dynamic = "force-dynamic";
 
-export default async function EventAdminPage({ params }: { params: Promise<{ eventId: string }> }) {
+export default async function EventAdminPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ eventId: string }>;
+  searchParams: Promise<{ tab?: string }>;
+}) {
   const { eventId } = await params;
+  const sp = await searchParams;
+  const tab = sp.tab === "review" ? "review" : "config";
   const event = await getEventForAdmin(eventId);
   if (!event) notFound();
 
@@ -83,26 +92,44 @@ export default async function EventAdminPage({ params }: { params: Promise<{ eve
         </Link>
       </header>
 
-      <ConfigForm event={event} />
+      <nav className="adm-tabs" aria-label="Secciones del panel">
+        <a href={"/admin/" + event.id} className={"adm-tab" + (tab === "config" ? " adm-tab-active" : "")}>
+          Configuracion
+        </a>
+        <a
+          href={"/admin/" + event.id + "?tab=review"}
+          className={"adm-tab" + (tab === "review" ? " adm-tab-active" : "")}
+        >
+          Revisar fotos
+        </a>
+      </nav>
 
-      <DrivePanel eventId={event.id} />
+      {tab === "review" ? (
+        <ReviewSwiper photos={photos} />
+      ) : (
+        <>
+          <ConfigForm event={event} />
 
-      <QRCard url={qrUrl} slug={event.slug} />
+          <DrivePanel eventId={event.id} />
 
-      <MembersPanel
-        eventId={event.id}
-        createdBy={event.created_by}
-        currentUserId={user?.id ?? ""}
-        members={members}
-      />
+          <QRCard url={qrUrl} slug={event.slug} />
 
-      <ModerationPanel
-        eventId={event.id}
-        slug={event.slug}
-        initialStatus={event.status}
-        initialPhotos={photos}
-        initialComments={comments}
-      />
+          <MembersPanel
+            eventId={event.id}
+            createdBy={event.created_by}
+            currentUserId={user?.id ?? ""}
+            members={members}
+          />
+
+          <ModerationPanel
+            eventId={event.id}
+            slug={event.slug}
+            initialStatus={event.status}
+            initialPhotos={photos}
+            initialComments={comments}
+          />
+        </>
+      )}
     </main>
   );
 }

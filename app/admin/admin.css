@@ -381,3 +381,127 @@
   border-radius: 0.75rem;
   border: 1px solid var(--border);
 }
+
+/* ---- Revisor estilo Tinder (ReviewSwiper) ---- */
+.sw-stage {
+  position: relative;
+  min-height: 24rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.sw-card {
+  width: 100%;
+  max-width: 20rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  will-change: transform;
+}
+.sw-card:active {
+  cursor: grabbing;
+}
+
+.sw-img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.sw-body {
+  padding: 0.75rem 1rem;
+}
+
+.sw-caption {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.sw-hint {
+  position: absolute;
+  top: 1rem;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 2px solid;
+  letter-spacing: 0.04em;
+}
+.sw-hint-left {
+  left: 1rem;
+  color: var(--danger, #b3261e);
+  border-color: var(--danger, #b3261e);
+  transform: rotate(-12deg);
+}
+.sw-hint-right {
+  right: 1rem;
+  color: var(--ok, #1e7d32);
+  border-color: var(--ok, #1e7d32);
+  transform: rotate(12deg);
+}
+
+.sw-help {
+  text-align: center;
+}
+
+.sw-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sw-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+.sw-done-icon {
+  font-size: 2.2rem;
+}
+.sw-done-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ---- Pestanas del panel admin ---- */
+.adm-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.adm-tab {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.adm-tab:hover {
+  color: var(--text);
+}
+.adm-tab-active {
+  color: var(--text);
+  border-bottom-color: var(--primary);
+}
