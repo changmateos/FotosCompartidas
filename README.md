@@ -1,5 +1,7 @@
 # PicMyEvent
 
+**Estado: v1.0 EN PRODUCCION** · https://fotoscompartidas-one.vercel.app · Repo: https://github.com/changmateos/FotosCompartidas
+
 App web (multi-evento) para que los invitados de un evento escaneen un QR, tomen fotos con la camara nativa de su celular y estas caigan en la carpeta de Google Drive del organizador, con feed en vivo (fotos + mensajes + likes + comentarios).
 
 - **Stack**: Next.js (Vercel, plan Hobby gratis) + Supabase (gratis) + Google Drive (del organizador, 15 GB).

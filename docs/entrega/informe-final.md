@@ -139,3 +139,62 @@ drive_file_id) y feed que NUNCA golpea Drive (d14/d17).
 - Repo etiquetado v1.0 (git tag v1.0) tras pasar el checklist.
 - Este informe en docs/entrega/informe-final.md.
 - ADRs en docs/ADRs.md · pruebas en docs/pruebas.md · scripts en scripts/.
+
+
+---
+
+## 8. Cierre del proyecto (v1.0)
+
+### Estado de despliegue (real, verificado)
+- Produccion: https://fotoscompartidas-one.vercel.app (Vercel Hobby, gratis).
+- Repo: https://github.com/changmateos/FotosCompartidas (rama main).
+- Supabase: migraciones 0001-0012 aplicadas, bucket "thumbs" publico,
+  Realtime publication (photos/likes/comments) activa, Google provider
+  configurado.
+- Google Cloud: app OAuth PUBLICADA (consent screen + /privacy enlazada),
+  credenciales OAuth Web con redirects /api/auth/callback y
+  /api/drive/callback.
+- Envs de produccion completas en Vercel (8 variables).
+
+### Mejoras posteriores al plan original (incorporadas a v1.0)
+1. UX camara: obturador STICKY en el feed del invitado (barra superior con
+   desenfoque) para tomar fotos mientras se scrollea; overlay a pantalla
+   completa para el flujo (procesar / vista previa + mensaje / subir).
+2. Panel admin en pestanas: "Configuracion" (formulario, Drive, QR, miembros,
+   ciclo de vida) y "Revisar fotos".
+3. Revisor de fotos por BOTONES ("Guardar" / "Eliminar") en lugar de swipe:
+   el gesto de deslizar con touch-action:none bloqueaba el scroll tactil en
+   Android Chrome; los botones son mas accesibles y no interfieren con el
+   scroll.
+4. Correcciones de scroll en movil: el admin es el UNICO scroll container
+   (body bloqueado en /admin via clase detectada por ruta), sticky de pestanas
+   funcional en Android, sin scroll horizontal (overflow-x:hidden en html y
+   clip interno).
+5. Seguridad (docs/seguridad.md): headers de seguridad (CSP, X-Frame-Options,
+   etc.), guest_id solo por cookie (anti-suplantacion), caption sanitizado,
+   contentType JPEG forzado en welcome-photo, error generico en miembros
+   (anti-enumeracion). Pendiente a futuro: actualizar dependencias (postcss
+   via next, uuid via googleapis) y CAPTCHA opcional para eventos masivos.
+
+### Decisiones de cierre
+- El panel admin NO usa actualizacion en tiempo real (por diseno): se revisan
+  las fotos al final del evento, cuando ya no hay subidas. El feed de
+  invitados SI es en tiempo real (Realtime + fallback a polling con ETag).
+
+### Checklist final
+- [x] App OAuth PUBLICADA · /privacy accesible · envs en Vercel
+- [x] Sin secretos en el repo
+- [x] Migraciones 0001-0012 + Realtime + bucket "thumbs"
+- [x] Dominio y HTTPS (vercel.app)
+- [x] Repo en GitHub, main
+- [~] Prueba de humo en produccion (organizador real creo evento y probo)
+- [ ] Resultados T9.1/T9.2 (scripts de concurrencia) pendientes de ejecutar
+      contra el deploy real con carga masiva.
+- [x] Tag v1.0 (seccion 7)
+
+### Como repetir un evento (guia rapida)
+1. /admin -> Crear evento -> descargar QR e imprimir.
+2. Tab Drive: nombre de carpeta -> Conectar (autorizar con Google).
+3. Invitados escanean el QR, toman fotos; el feed las muestra en vivo.
+4. Al terminar: tab "Revisar fotos" -> Guardar/Eliminar una a una.
+5. Cerrar evento (feed queda como recuerdo) o Borrar (las fotos quedan en su Drive).
