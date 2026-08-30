@@ -22,13 +22,26 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  let body: { eventId?: string; folderName?: string } = {};
+  let eventId: string | null = null;
+  let folderName: string | null = null;
+  const contentType = request.headers.get("content-type") ?? "";
   try {
-    body = (await request.json()) as typeof body;
+    if (contentType.includes("application/json")) {
+      const body = (await request.json()) as { eventId?: string; folderName?: string };
+      eventId = body.eventId ?? null;
+      folderName = body.folderName ?? null;
+    } else {
+      // Form-urlencoded (formulario HTML del DrivePanel)
+      const form = await request.formData();
+      const e = form.get("eventId");
+      const f = form.get("folderName");
+      eventId = typeof e === "string" ? e : null;
+      folderName = typeof f === "string" ? f : null;
+    }
   } catch {
     // cuerpo vacio o invalido -> se valida abajo
   }
-  return handleConnect(body.eventId ?? null, body.folderName ?? null);
+  return handleConnect(eventId, folderName);
 }
 
 async function handleConnect(eventId: string | null, folderName: string | null) {
