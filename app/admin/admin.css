@@ -1,7 +1,15 @@
 /* Estilos compartidos del panel admin (F2). Usan las CSS variables de tema. */
 
 .adm-main {
-  min-height: 100vh;
+  /* .adm-main es el contenedor de scroll del admin: asi el sticky de
+     las pestanas se ancla a SU scrollport y funciona en Android Chrome
+     (si el scroll viviera en el viewport, cualquier overflow en un
+     ancestro romperia el sticky). overflow-x:hidden recorta el
+     desborde horizontal SIN romper el sticky (es el scroll container). */
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
   max-width: 52rem;
   margin: 0 auto;
@@ -11,9 +19,6 @@
   gap: 1.5rem;
   box-sizing: border-box;
   overflow-wrap: anywhere;
-  /* Recorta el desborde horizontal interno SIN romper el sticky
-     de las pestanas (clip no crea scroll container). */
-  overflow-x: clip;
 }
 
 .adm-head {
@@ -411,32 +416,18 @@
   border: 1px solid var(--border);
 }
 
-/* ---- Revisor estilo Tinder (ReviewSwiper) ---- */
-.sw-stage {
-  position: relative;
-  min-height: 24rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  touch-action: none;
-}
-
-.sw-card {
+/* ---- Revisor de fotos (ReviewSwiper, version botones) ----
+   SIN touch-action:none ni swipe: el scroll tactil del admin
+   funciona normal en Android Chrome. */
+.sw-card-static {
   width: 100%;
-  max-width: 20rem;
+  max-width: 22rem;
+  margin: 0 auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 1rem;
   overflow: hidden;
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-  will-change: transform;
-}
-.sw-card:active {
-  cursor: grabbing;
 }
 
 .sw-img {
@@ -444,7 +435,6 @@
   aspect-ratio: 3 / 4;
   object-fit: cover;
   display: block;
-  pointer-events: none;
 }
 
 .sw-body {
@@ -457,39 +447,41 @@
   overflow-wrap: anywhere;
 }
 
-.sw-hint {
-  position: absolute;
-  top: 1rem;
-  font-weight: 800;
-  font-size: 1.1rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 2px solid;
-  letter-spacing: 0.04em;
-}
-.sw-hint-left {
-  left: 1rem;
-  color: var(--danger, #b3261e);
-  border-color: var(--danger, #b3261e);
-  transform: rotate(-12deg);
-}
-.sw-hint-right {
-  right: 1rem;
-  color: var(--ok, #1e7d32);
-  border-color: var(--ok, #1e7d32);
-  transform: rotate(12deg);
-}
-
-.sw-help {
-  text-align: center;
-}
-
 .sw-buttons {
   display: flex;
   gap: 0.75rem;
   justify-content: center;
   margin-top: 0.75rem;
   flex-wrap: wrap;
+}
+
+.sw-btn {
+  flex: 1 1 8rem;
+  max-width: 12rem;
+  padding: 0.9rem 1.4rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.sw-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.sw-btn:active {
+  transform: scale(0.97);
+}
+.sw-btn-keep {
+  background: #1e7d32;
+  border-color: #1e7d32;
+  color: #ffffff;
+}
+.sw-btn-delete {
+  background: #b3261e;
+  border-color: #b3261e;
+  color: #ffffff;
 }
 
 .sw-done {
