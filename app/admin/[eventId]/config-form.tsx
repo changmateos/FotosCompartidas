@@ -162,7 +162,7 @@ export function ConfigForm({ event }: { event: EventRecord }) {
         <div className="adm-welcome">
           {welcomeUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={welcomeUrl} alt="Foto de bienvenida actual" className="adm-welcome-img" />
+            <img src={welcomeUrl + (welcomeUrl.includes("?") ? "&" : "?") + "v=" + Date.now()} alt="Foto de bienvenida actual" className="adm-welcome-img" />
           ) : (
             <p className="adm-hint">Sin foto: el header del evento se mostrara solo con titulo y mensaje.</p>
           )}

@@ -95,7 +95,7 @@ export default async function EventPage({ params, searchParams }: Props) {
       <header className="ep-header">
         {event.welcome_photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={event.welcome_photo_url} alt="" className="ep-welcome-img" loading="lazy" decoding="async" />
+          <img src={event.welcome_photo_url + (event.welcome_photo_url.includes("?") ? "&" : "?") + "v=" + Date.now()} alt="" className="ep-welcome-img" loading="lazy" decoding="async" />
         ) : null}
         <h1 className="ep-title">{event.title}</h1>
         {owners ? <p className="ep-owners">{owners}</p> : null}
