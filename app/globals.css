@@ -18,16 +18,11 @@ body {
   width: 100%;
 }
 
-/* Evita el scroll horizontal SIN romper position:sticky.
-   "clip" (a diferencia de "hidden") NO crea un scroll container,
-   por lo que el sticky sigue funcionando en el elemento hijo.
-   Se aplica a html (el scroll container real en Chrome Android)
-   y a body como respaldo. Soportado en Chrome/Android, Edge y
-   Safari >= 16. */
-html,
-body {
-  overflow-x: clip;
-}
+/* NOTA: NO se pone overflow en html/body porque en Chrome/Android
+   cualquier overflow no-visible en un ancestro rompe position:sticky.
+   El desborde horizontal se recorta en cada contenedor (ver
+   .adm-main y .ep-root) usando overflow-x:clip, que NO crea scroll
+   container y por tanto mantiene el sticky. */
 
 /* ============================================================
    Temas PicMyEvent (decision 6 del handshake) - F8
