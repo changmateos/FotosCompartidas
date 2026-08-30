@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
-/* Reset global: evitar scroll horizontal y asegurar box-sizing. */
+/* Reset global: asegurar box-sizing (evita desbordes por padding/borde). */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-html {
-  overflow-x: hidden;
-}
-
+/* NOTA: NO se usa overflow-x:hidden en html/body porque rompe
+   position:sticky en moviles (iOS Safari). El desborde se corrige
+   en cada contenedor con max-width:100% y overflow-wrap. */
+html,
 body {
   margin: 0;
-  overflow-x: clip;
+  padding: 0;
   max-width: 100%;
+  width: 100%;
 }
 
 /* ============================================================
