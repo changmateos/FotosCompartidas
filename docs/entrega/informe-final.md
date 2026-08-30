@@ -121,12 +121,14 @@ drive_file_id) y feed que NUNCA golpea Drive (d14/d17).
 - [ ] Envs de produccion en Vercel: NEXT_PUBLIC_SUPABASE_URL/ANON_KEY,
       SUPABASE_SERVICE_ROLE_KEY, GOOGLE_CLIENT_ID/SECRET, GOOGLE_REDIRECT_URI,
       TOKEN_ENCRYPTION_KEY (32 bytes base64), NEXT_PUBLIC_APP_URL.
-- [ ] Sin secretos en el repo (.env*.local en .gitignore; verificacion
-      "git grep" de claves).
-- [ ] Migraciones 0001-0009 aplicadas en Supabase + Realtime publication con
+- [x] Sin secretos en el repo (.env*.local en .gitignore; verificacion
+      "git grep" de claves) — commit f8f2042 verificado (95 archivos, sin
+      .env.local ni node_modules).
+- [ ] Migraciones 0001-0012 aplicadas en Supabase + Realtime publication con
       photos/likes/comments + bucket "thumbs" publico.
 - [ ] Backup basico de Supabase habilitado (dashboard: Database > Backups).
 - [ ] Dominio y HTTPS funcionando.
+- [x] Repo git inicializado en main con commit v1.0 inicial (f8f2042).
 - [ ] Prueba de humo completa en produccion: organizador real crea evento,
       conecta Drive, descarga QR; 2 moviles (iPhone HEIC + Android) suben
       fotos; verificacion en Drive y feed; cerrar y borrar evento.
