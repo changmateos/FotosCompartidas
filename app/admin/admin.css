@@ -1,15 +1,11 @@
 /* Estilos compartidos del panel admin (F2). Usan las CSS variables de tema. */
 
 .adm-main {
-  /* .adm-main es el contenedor de scroll del admin: asi el sticky de
-     las pestanas se ancla a SU scrollport y funciona en Android Chrome
-     (si el scroll viviera en el viewport, cualquier overflow en un
-     ancestro romperia el sticky). overflow-x:hidden recorta el
-     desborde horizontal SIN romper el sticky (es el scroll container). */
-  height: 100dvh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  /* Scroll natural del body (sin "iframe"/doble scroll). El sticky de
+     las pestanas se ancla al VIEWPORT. overflow-x:clip recorta el
+     desborde horizontal DENTRO del admin sin crear un scroll container
+     (clip no lo crea), asi el sticky sigue funcionando. */
+  min-height: 100dvh;
   width: 100%;
   max-width: 52rem;
   margin: 0 auto;
@@ -19,6 +15,7 @@
   gap: 1.5rem;
   box-sizing: border-box;
   overflow-wrap: anywhere;
+  overflow-x: clip;
 }
 
 .adm-head {

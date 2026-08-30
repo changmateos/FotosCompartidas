@@ -18,11 +18,13 @@ body {
   width: 100%;
 }
 
-/* NOTA: NO se pone overflow en html/body porque en Chrome/Android
-   cualquier overflow no-visible en un ancestro rompe position:sticky.
-   El desborde horizontal se recorta en cada contenedor (ver
-   .adm-main y .ep-root) usando overflow-x:clip, que NO crea scroll
-   container y por tanto mantiene el sticky. */
+/* scroll horizontal del VIEWPORT eliminado de forma fiable.
+   Solo html (el elemento raiz) recibe overflow-x:hidden: en Chrome/Android
+   esto corta el scroll horizontal de la pagina. NO se aplica a body
+   (el overflow de un ancestro no raiz rompe position:sticky del hijo). */
+html {
+  overflow-x: hidden;
+}
 
 /* ============================================================
    Temas PicMyEvent (decision 6 del handshake) - F8
