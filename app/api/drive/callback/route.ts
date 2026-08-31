@@ -25,6 +25,7 @@ type OauthPayload = {
   verifier: string;
   eventId: string;
   folderName: string;
+  modo?: string;
   createdAt: number;
 };
 
@@ -139,6 +140,6 @@ export async function GET(request: Request) {
 
   clearCookie();
   return NextResponse.redirect(
-    `${origin}/admin/${payload.eventId}?drive=connected`
+    `${origin}/admin/${payload.eventId}?drive=connected${payload.modo === "nuevo" ? "&modo=nuevo&paso=4" : ""}`
   );
 }

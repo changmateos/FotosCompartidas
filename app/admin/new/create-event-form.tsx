@@ -38,7 +38,8 @@ export function CreateEventForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "No se pudo crear el evento.");
-      router.push("/admin/" + data.eventId);
+      // Modo "nuevo": el evento se configura con el wizard paso a paso.
+      router.push("/admin/" + data.eventId + "?modo=nuevo&paso=1");
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo crear el evento.");
       setSaving(false);

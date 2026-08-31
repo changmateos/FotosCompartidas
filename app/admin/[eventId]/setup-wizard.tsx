@@ -1,14 +1,14 @@
 "use client";
 
-// Wizard de configuracion del evento (peticion UX): paso a paso para dar
-// orden y comodidad, terminando con el QR del evento para compartir.
+// Wizard de configuracion del evento (peticion UX): paso a paso, con el paso
+// PERSISTIDO en la URL (?paso=N). Al volver del OAuth de Google (que redirige
+// a /admin/[eventId]?drive=connected y pierde ?paso) el componente lo retoma
+// desde localStorage, asi NO se reinicia en el paso 1.
 //  - Pasos: 1 Informacion · 2 Tema y colores · 3 Foto de bienvenida ·
-//           4 Google Drive · 5 QR para compartir
-//  - Boton "Ver todo en una pagina": cambia a modo one-page (todo junto,
-//    responsive PC/celular) para editar rapido.
-//  - Cada paso guarda su parte via PATCH /api/events/[eventId] (parcial)
-//    o sus endpoints propios (foto de bienvenida, Drive).
-import { useState } from "react";
+//           4 Google Drive · 5 Compartir QR
+//  - "Terminar" limpia el wizard y va al one-page de edicion.
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { EventRecord } from "@/lib/events";
 import { ThemePicker, type ThemeSelection } from "../theme-picker";
 import { OwnerNamesInput } from "../owner-names-input";
@@ -25,6 +25,10 @@ const STEPS = [
   { n: 5, label: "Compartir QR" },
 ];
 
+function storageKey(eventId: string) {
+  return "pme_wizard_step_" + eventId;
+}
+
 type Props = {
   event: EventRecord;
   qrUrl: string;
@@ -35,30 +39,55 @@ type Props = {
 };
 
 export function SetupWizard({ event, qrUrl, members, createdBy, currentUserId, initialStatus }: Props) {
-  const [mode, setMode] = useState<"wizard" | "onepage">("wizard");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlPaso = searchParams?.get("paso");
+  // Paso inicial: URL (?paso=, p.ej. al volver del OAuth de Drive con paso=4)
+  // o localStorage (retoma tras recargar) o 1.
   const [step, setStep] = useState(1);
 
+  useEffect(() => {
+    try {
+      if (urlPaso) {
+        const n = Number(urlPaso);
+        if (Number.isInteger(n) && n >= 1 && n <= STEPS.length) {
+          setStep(n);
+          window.localStorage.setItem(storageKey(event.id), String(n));
+          return;
+        }
+      }
+      const saved = window.localStorage.getItem(storageKey(event.id));
+      if (saved) {
+        const n = Number(saved);
+        if (Number.isInteger(n) && n >= 1 && n <= STEPS.length) setStep(n);
+      }
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event.id, urlPaso]);
+
   function go(n: number) {
-    setStep(Math.min(Math.max(1, n), STEPS.length));
+    const clamped = Math.min(Math.max(1, n), STEPS.length);
+    setStep(clamped);
+    try {
+      window.localStorage.setItem(storageKey(event.id), String(clamped));
+    } catch {
+      // ignore
+    }
   }
 
-  if (mode === "onepage") {
-    return (
-      <OnePage
-        event={event}
-        qrUrl={qrUrl}
-        members={members}
-        createdBy={createdBy}
-        currentUserId={currentUserId}
-        initialStatus={initialStatus}
-        onBackToWizard={() => setMode("wizard")}
-      />
-    );
+  function finish() {
+    try {
+      window.localStorage.removeItem(storageKey(event.id));
+    } catch {
+      // ignore
+    }
+    router.push("/admin/" + event.id);
   }
 
   return (
     <div className="wz-root">
-      {/* Barra de progreso */}
       <div className="wz-steps" role="tablist" aria-label="Pasos de configuracion">
         {STEPS.map((s) => (
           <button
@@ -96,21 +125,20 @@ export function SetupWizard({ event, qrUrl, members, createdBy, currentUserId, i
         <button type="button" className="adm-btn" onClick={() => go(step - 1)} disabled={step <= 1}>
           Anterior
         </button>
-        <button
-          type="button"
-          className="adm-btn adm-btn-primary"
-          onClick={() => go(step + 1)}
-          disabled={step >= STEPS.length}
-        >
-          {step >= STEPS.length ? "Finalizado" : "Siguiente"}
-        </button>
+        {step < STEPS.length ? (
+          <button type="button" className="adm-btn adm-btn-primary" onClick={() => go(step + 1)}>
+            Siguiente
+          </button>
+        ) : (
+          <button type="button" className="adm-btn adm-btn-primary" onClick={finish}>
+            Terminar configuracion
+          </button>
+        )}
       </div>
 
-      <div className="wz-modeswitch">
-        <button type="button" className="adm-btn" onClick={() => setMode("onepage")}>
-          Ver todo en una pagina (edicion rapida)
-        </button>
-      </div>
+      <p className="adm-hint" style={{ textAlign: "center" }}>
+        Tu progreso se guarda en cada paso: si cierras la pagina, al volver continuas donde quedaste.
+      </p>
     </div>
   );
 }
@@ -319,7 +347,7 @@ function DriveStep({ eventId }: { eventId: string }) {
     <section className="adm-card">
       <h3>Google Drive</h3>
       <p className="adm-hint">Conecta la carpeta donde caeran las fotos de los invitados.</p>
-      <DrivePanel eventId={eventId} />
+      <DrivePanel eventId={eventId} modo="nuevo" />
     </section>
   );
 }
@@ -345,48 +373,11 @@ function ShareStep({
       <section className="adm-card">
         <h3>Tu evento esta listo</h3>
         <p className="adm-hint">
-          Comparti este codigo QR: los invitados lo escanean y se abre la pagina de fotos de
-          {event.title ? " " + event.title : " tu evento"}.
+          Comparti este codigo QR: los invitados lo escanean y se abre la pagina de fotos.
         </p>
         <QRCard url={qrUrl} slug={event.slug} />
       </section>
 
-      <MembersPanel eventId={event.id} createdBy={createdBy} currentUserId={currentUserId} members={members} />
-      <ModerationPanel eventId={event.id} slug={event.slug} initialStatus={initialStatus} />
-    </div>
-  );
-}
-
-/* ---------------- Modo one-page (todo junto) ---------------- */
-import { ConfigForm } from "./config-form";
-
-function OnePage({
-  event,
-  qrUrl,
-  members,
-  createdBy,
-  currentUserId,
-  initialStatus,
-  onBackToWizard,
-}: {
-  event: EventRecord;
-  qrUrl: string;
-  members: MemberRow[];
-  createdBy: string;
-  currentUserId: string;
-  initialStatus: "active" | "closed";
-  onBackToWizard: () => void;
-}) {
-  return (
-    <div className="wz-onepage">
-      <div className="wz-modeswitch">
-        <button type="button" className="adm-btn" onClick={onBackToWizard}>
-          Configurar paso a paso
-        </button>
-      </div>
-      <ConfigForm event={event} />
-      <DrivePanel eventId={event.id} />
-      <QRCard url={qrUrl} slug={event.slug} />
       <MembersPanel eventId={event.id} createdBy={createdBy} currentUserId={currentUserId} members={members} />
       <ModerationPanel eventId={event.id} slug={event.slug} initialStatus={initialStatus} />
     </div>

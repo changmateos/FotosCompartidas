@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { getEventForAdmin } from "@/lib/events";
 import { SetupWizard } from "./setup-wizard";
+import { ConfigOnePage } from "./config-one-page";
 import { ReviewSwiper, type ReviewPhoto } from "./ReviewSwiper";
 import type { MemberRow } from "./MembersPanel";
 import "../admin.css";
@@ -18,11 +19,14 @@ export default async function EventAdminPage({
   searchParams,
 }: {
   params: Promise<{ eventId: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; modo?: string }>;
 }) {
   const { eventId } = await params;
   const sp = await searchParams;
   const tab = sp.tab === "review" ? "review" : "config";
+  // Modo "nuevo" (viene de crear evento) -> wizard paso a paso.
+  // Sin modo (editar evento existente desde Mis eventos) -> one-page.
+  const esNuevo = sp.modo === "nuevo";
   const event = await getEventForAdmin(eventId);
   if (!event) notFound();
 
@@ -95,8 +99,17 @@ export default async function EventAdminPage({
 
       {tab === "review" ? (
         <ReviewSwiper photos={photos} />
-      ) : (
+      ) : esNuevo ? (
         <SetupWizard
+          event={event}
+          qrUrl={qrUrl}
+          members={members}
+          createdBy={event.created_by}
+          currentUserId={user?.id ?? ""}
+          initialStatus={event.status}
+        />
+      ) : (
+        <ConfigOnePage
           event={event}
           qrUrl={qrUrl}
           members={members}

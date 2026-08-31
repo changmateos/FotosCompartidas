@@ -18,7 +18,7 @@ type DriveStatus =
       error?: string | null; // "temporal": fallo transitorio de la API
     };
 
-export function DrivePanel({ eventId }: { eventId: string }) {
+export function DrivePanel({ eventId, modo = "" }: { eventId: string; modo?: string }) {
   const [status, setStatus] = useState<DriveStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +120,7 @@ export function DrivePanel({ eventId }: { eventId: string }) {
           <form method="POST" action="/api/drive/connect">
             <input type="hidden" name="eventId" value={eventId} />
             <input type="hidden" name="folderName" value={folderName} />
+            <input type="hidden" name="modo" value={modo} />
             <button type="submit" className="adm-btn adm-btn-primary" disabled={!folderName.trim()}>
               Conectar Google Drive
             </button>

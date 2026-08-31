@@ -17,34 +17,39 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   return handleConnect(
     searchParams.get("eventId") ?? null,
-    searchParams.get("folderName") ?? null
+    searchParams.get("folderName") ?? null,
+    searchParams.get("modo") ?? ""
   );
 }
 
 export async function POST(request: Request) {
   let eventId: string | null = null;
   let folderName: string | null = null;
+  let modo = "";
   const contentType = request.headers.get("content-type") ?? "";
   try {
     if (contentType.includes("application/json")) {
-      const body = (await request.json()) as { eventId?: string; folderName?: string };
+      const body = (await request.json()) as { eventId?: string; folderName?: string; modo?: string };
       eventId = body.eventId ?? null;
       folderName = body.folderName ?? null;
+      modo = typeof body.modo === "string" ? body.modo : "";
     } else {
       // Form-urlencoded (formulario HTML del DrivePanel)
       const form = await request.formData();
       const e = form.get("eventId");
       const f = form.get("folderName");
+      const m = form.get("modo");
       eventId = typeof e === "string" ? e : null;
       folderName = typeof f === "string" ? f : null;
+      modo = typeof m === "string" ? m : "";
     }
   } catch {
     // cuerpo vacio o invalido -> se valida abajo
   }
-  return handleConnect(eventId, folderName);
+  return handleConnect(eventId, folderName, modo);
 }
 
-async function handleConnect(eventId: string | null, folderName: string | null) {
+async function handleConnect(eventId: string | null, folderName: string | null, modo = "") {
   // 1. Sesion del organizador
   const supabase = await createClient();
   const {
@@ -97,6 +102,7 @@ async function handleConnect(eventId: string | null, folderName: string | null) 
     verifier,
     eventId,
     folderName: name,
+    modo,
     createdAt: Date.now(),
   });
 
