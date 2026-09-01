@@ -126,16 +126,25 @@ export function useFeed(eventId: string) {
     })();
 
     const supabase = getSupabase();
-    const channel: RealtimeChannel = supabase
-      .channel("feed-" + eventId)
-      .on("postgres_changes", { event: "*", schema: "public", table: "photos", filter: "event_id=eq." + eventId }, (payload) => onPush(payload as RealtimePayload))
-      .on("postgres_changes", { event: "*", schema: "public", table: "likes", filter: "event_id=eq." + eventId }, (payload) => onPush(payload as RealtimePayload))
-      .on("postgres_changes", { event: "*", schema: "public", table: "comments", filter: "event_id=eq." + eventId }, (payload) => onPush(payload as RealtimePayload))
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
-          startPolling();
-        }
-      });
+    // El canal Realtime va en try/catch: si la conexion falla (p.ej. el
+    // WebSocket bloqueado en algunos navegadores), se degrada a polling en
+    // lugar de lanzar un error que romperia la pagina (error boundary).
+    let channel: RealtimeChannel | null = null;
+    try {
+      channel = supabase
+        .channel("feed-" + eventId)
+        .on("postgres_changes", { event: "*", schema: "public", table: "photos", filter: "event_id=eq." + eventId }, (payload) => onPush(payload as RealtimePayload))
+        .on("postgres_changes", { event: "*", schema: "public", table: "likes", filter: "event_id=eq." + eventId }, (payload) => onPush(payload as RealtimePayload))
+        .on("postgres_changes", { event: "*", schema: "public", table: "comments", filter: "event_id=eq." + eventId }, (payload) => onPush(payload as RealtimePayload))
+        .subscribe((status) => {
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+            startPolling();
+          }
+        });
+    } catch {
+      // WebSocket no disponible (Safari/otros): fallback a polling directo.
+      startPolling();
+    }
 
     // Detector de fallback: si no llega push en X segundos -> polling
     const watcher = setInterval(() => {
@@ -148,7 +157,7 @@ export function useFeed(eventId: string) {
       cancelled = true;
       clearInterval(watcher);
       stopPolling();
-      void supabase.removeChannel(channel);
+      if (channel) void supabase.removeChannel(channel);
     };
   }, [eventId, mergePage, onPush, startPolling, stopPolling]);
 

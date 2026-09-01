@@ -79,7 +79,13 @@ export async function getGuestId(): Promise<string> {
 
   const id = uuidV4();
   resolvedGuestId = id;
-  window.localStorage.setItem("pme_guest_id", id);
+  try {
+    // Safari (modo privado) lanza SecurityError/QuotaExceededError en
+    // localStorage.setItem; no debe romper el feed (error boundary).
+    window.localStorage.setItem("pme_guest_id", id);
+  } catch {
+    // sin storage local: el id vive en memoria por esta sesion
+  }
   return id;
 }
 

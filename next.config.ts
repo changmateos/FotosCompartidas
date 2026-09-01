@@ -13,7 +13,10 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://*.supabase.co",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co https://oauth2.googleapis.com",
+      // wss:// es imprescindible: Supabase Realtime usa WebSockets.
+      // Safari aplica el CSP de WebSocket de forma estricta y bloquearia
+      // el canal sin esta entrada (provocaba error de pagina en iPhone).
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://oauth2.googleapis.com",
       "frame-src 'self' https://accounts.google.com",
       "object-src 'none'",
       "base-uri 'self'",
